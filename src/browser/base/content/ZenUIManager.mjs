@@ -20,6 +20,25 @@ var gZenUIManager = {
     ).observe(document.getElementById('navigator-toolbox'));
   },
 
+  get monoco() {
+    if (this._monoco) {
+      return this._monoco;
+    }
+    this._monoco = ChromeUtils.importESModule('chrome://browser/content/zen-vendor/monoco.min.mjs', {
+      global: "current"
+    });
+    return this._monoco;
+  },
+
+  onTabCreated(tab) {
+    const background = tab.querySelector('.tab-background');
+    this.monoco.addCorners(background, {
+      clip: false,
+      borderRadius: 10,
+      smoothing: 0.6,
+    });
+  },
+
   updateTabsToolbar() {
     // Set tabs max-height to the "toolbar-items" height
     const toolbarItems = document.getElementById('tabbrowser-tabs');

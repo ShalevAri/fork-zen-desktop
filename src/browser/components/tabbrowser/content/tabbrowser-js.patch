@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b6878d4d394 100644
+index ce68c339f35416574b7bc7ebf8c93378f653242b..b77ba2dbd7bf61b35b7ab84286317085bfe41a73 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -409,11 +409,39 @@
@@ -201,7 +201,15 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
          tab.initialize();
        }
  
-@@ -4070,6 +4156,10 @@
+@@ -3809,6 +3895,7 @@
+         detail: eventDetail || {},
+       });
+       tab.dispatchEvent(evt);
++      gZenUIManager.onTabCreated(tab);
+     }
+ 
+     getTabsToTheStartFrom(aTab) {
+@@ -4070,6 +4157,10 @@
          return;
        }
  
@@ -212,7 +220,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
        this.removeTabs(selectedTabs);
      }
  
-@@ -4389,6 +4479,13 @@
+@@ -4389,6 +4480,13 @@
          TelemetryStopwatch.start("FX_TAB_CLOSE_TIME_NO_ANIM_MS", aTab);
        }
  
@@ -226,7 +234,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
        // Handle requests for synchronously removing an already
        // asynchronously closing tab.
        if (!animate && aTab.closing) {
-@@ -4404,6 +4501,10 @@
+@@ -4404,6 +4502,10 @@
        // state).
        let tabWidth = window.windowUtils.getBoundsWithoutFlushing(aTab).width;
  
@@ -237,7 +245,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
        if (
          !this._beginRemoveTab(aTab, {
            closeWindowFastpath: true,
-@@ -4556,14 +4657,14 @@
+@@ -4556,14 +4658,14 @@
          !!this.tabsInCollapsedTabGroups.length;
        if (
          aTab.visible &&
@@ -254,7 +262,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
  
          if (closeWindow) {
            // We've already called beforeunload on all the relevant tabs if we get here,
-@@ -5411,10 +5512,10 @@
+@@ -5411,10 +5513,10 @@
        SessionStore.deleteCustomTabValue(aTab, "hiddenBy");
      }
  
@@ -267,7 +275,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
          aTab.selected ||
          aTab.closing ||
          // Tabs that are sharing the screen, microphone or camera cannot be hidden.
-@@ -7384,6 +7485,7 @@
+@@ -7384,6 +7486,7 @@
              aWebProgress.isTopLevel
            ) {
              this.mTab.setAttribute("busy", "true");
@@ -275,7 +283,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
              gBrowser._tabAttrModified(this.mTab, ["busy"]);
              this.mTab._notselectedsinceload = !this.mTab.selected;
              gBrowser.syncThrobberAnimations(this.mTab);
-@@ -8344,7 +8446,7 @@ var TabContextMenu = {
+@@ -8344,7 +8447,7 @@ var TabContextMenu = {
      );
      contextUnpinSelectedTabs.hidden =
        !this.contextTab.pinned || !multiselectionContext;
@@ -284,7 +292,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
      // Move Tab items
      let contextMoveTabOptions = document.getElementById(
        "context_moveTabOptions"
-@@ -8378,7 +8480,7 @@ var TabContextMenu = {
+@@ -8378,7 +8481,7 @@ var TabContextMenu = {
      let contextMoveTabToStart = document.getElementById("context_moveToStart");
      let isFirstTab =
        tabsToMove[0] == visibleTabs[0] ||
@@ -293,7 +301,7 @@ index ce68c339f35416574b7bc7ebf8c93378f653242b..07e3f7fcdb3e219c523201929cf07b68
      contextMoveTabToStart.disabled = isFirstTab && allSelectedTabsAdjacent;
  
      document.getElementById("context_openTabInWindow").disabled =
-@@ -8607,6 +8709,7 @@ var TabContextMenu = {
+@@ -8607,6 +8710,7 @@ var TabContextMenu = {
      if (this.contextTab.multiselected) {
        gBrowser.removeMultiSelectedTabs();
      } else {
