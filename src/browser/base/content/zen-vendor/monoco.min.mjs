@@ -186,10 +186,10 @@ function c(t, n) {
       (i.width = e.width), (i.height = e.height);
     }
     const r = { ...i, ...n };
-    r.isRounded && ((r.width = r.width ? Math.round(r.width) : void 0), (r.height = r.height ? Math.round(r.height) : void 0)),
-      (t.style.clipPath = i.clip ? `path('${h(r)}')` : ''),
+    r.isRounded && ((r.width = r.width ? Math.round(r.width) : void 0), (r.height = r.height ? Math.round(r.height) : void 0));
+      (t.style.clipPath = i.clip ? `path('${h(r)}')` : '');
       (i.background || i.border) &&
-        (t.style.backgroundImage = (function (e) {
+        (t.style.maskImage = (function (e) {
           const {
               border: t = [],
               offset: n = 0,
@@ -212,11 +212,11 @@ function c(t, n) {
                 c = 0 === i ? 2 * (t + s) : s;
               s &&
                 (o.push(
-                  `<path d="${h({ ...e, offset: 0 === i ? n : u.map((e) => e + t + 0.5 * s) })}" fill="none" stroke="${a}" stroke-width="${c}" />`
+                  `<path d="${h({ ...e, offset: 0 === i ? n : u.map((e) => e + t + 0.5 * s) })}" fill="none" stroke-width="${c}" />`
                 ),
                 (t += s));
             }
-            r && (s ? d.push(`<rect width="${a}" height="${c}" fill="${r}" />`) : d.push(`<path d="${g}" fill="${r}" />`)),
+            r && (s ? d.push(`<rect width="${a}" height="${c}" />`) : d.push(`<path d="${g}" />`)),
               d.push(...o.reverse());
           }
           return d.length

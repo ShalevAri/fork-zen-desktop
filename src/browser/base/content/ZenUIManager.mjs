@@ -8,6 +8,8 @@ var gZenUIManager = {
     XPCOMUtils.defineLazyPreferenceGetter(this, 'sidebarHeightThrottle', 'zen.view.sidebar-height-throttle', 500);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
 
+    this.initSquircles();
+
     new ResizeObserver(gZenCommonActions.throttle(this.updateTabsToolbar.bind(this), this.sidebarHeightThrottle)).observe(
       document.getElementById('tabbrowser-tabs')
     );
@@ -20,23 +22,48 @@ var gZenUIManager = {
     ).observe(document.getElementById('navigator-toolbox'));
   },
 
+  initSquircles() {
+    window.addEventListener('TabClose', this.onTabClose.bind(this));
+    this.addSquirecleCorners(document.getElementById('urlbar-background'));
+  },
+
   get monoco() {
     if (this._monoco) {
       return this._monoco;
     }
     this._monoco = ChromeUtils.importESModule('chrome://browser/content/zen-vendor/monoco.min.mjs', {
-      global: "current"
+      global: 'current',
     });
     return this._monoco;
   },
 
-  onTabCreated(tab) {
-    const background = tab.querySelector('.tab-background');
-    this.monoco.addCorners(background, {
-      clip: false,
+  get squircleOptions() {
+    if (this._squircleOptions) {
+      return this._squircleOptions;
+    }
+    this._squircleOptions = {
       borderRadius: 10,
       smoothing: 0.6,
-    });
+      isRounded: true,
+      clip: true,
+      //background: "transparent",
+      //border: [2, "transparent"],
+    };
+    return this._squircleOptions;
+  },
+
+  onTabClose(event) {
+    const tab = event.target;
+    this.monoco.unobserve(tab.querySelector('.tab-background'));
+  },
+
+  onTabCreated(tab) {
+    const background = tab.querySelector('.tab-background');
+    this.addSquirecleCorners(background, { throttle: 1000 });
+  },
+
+  addSquirecleCorners(element, extraOptions = {}) {
+    return this.monoco.addCorners(element, {...this.squircleOptions, ...extraOptions});
   },
 
   updateTabsToolbar() {
